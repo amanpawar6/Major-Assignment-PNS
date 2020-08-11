@@ -5,14 +5,14 @@ const employeeSchema = new mongoose.Schema({
     "password": String,
     "name": String,
     "age": Number,
-    "SC": String,
-    "SSC": String,
-    "graduate": String,
+    "sc": String,
+    "ssc": String,
+    "graduation": String,
     "masters": String,
     "phone_no": Number,
     "address": String,
     "lst_cmpny": String,
-    "crt_cmpny": String,
+    "crt_cmpny": String
 })
 
 employee = mongoose.model('employee', employeeSchema);
