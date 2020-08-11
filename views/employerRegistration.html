@@ -5,31 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script>
-        function myfunction() {
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var Name = document.getElementById("Name").value;
-            var Company_Name = document.getElementById("Company_Name").value;
-            var Phone_Number = document.getElementById("Phone_Number").value;
-            var Address = document.getElementById("Address").value;
-            var Designation = document.getElementById("Designation").value;
-            let data = JSON.stringify({
-                "email": email,
-                "password": password,
-                "name": Name,
-                "Company_Name": Company_Name,
-                "Phone_Number": Phone_Number,
-                "Address": Address,
-                "Designation": Designation,
-            });
-            fetch('http://localhost:3000/login', {method : 'post', body : data, headers: { 'Content-type': 'application/json' }})
-            .then(Response => Response.json())
-            .then(Response => console.log(Response));
-        }
-    </script>
 </head>
-
 <body>
     <div>
         <a href="/home/aman/Desktop/PNS/views/login.html">
@@ -52,7 +28,7 @@
             Address : <input type="password" id="Address" name="Address" placeholder="Address" required><br>
             Designation : <input type="password" id="Designation" name="Designation" placeholder="Designation"
                 required><br>
-            <input type="button" id="loginbutton" value="submit" onclick="myfunction()">
+            <input type="button" id="loginbutton" value="submit">
             <div id="name"></div>
         </form>
     </div>
