@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+
+const mongoose=require("mongoose");
 
 const employeeSchema = new mongoose.Schema({
     "email": String,
@@ -13,8 +14,9 @@ const employeeSchema = new mongoose.Schema({
     "address": String,
     "lst_cmpny": String,
     "crt_cmpny": String
-})
+});
 
-employee = mongoose.model('employee', employeeSchema);
+const employee = mongoose.model('employee', employeeSchema);
 
 module.exports = employee;
+
