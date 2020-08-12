@@ -6,12 +6,14 @@ const crypto=require('crypto');
 
 
 function login(req, res, next) {
+    let email=req.body.email;
+    let password=req.body.password;
     req.session.privatekey=crypto.randomBytes(64).toString('hex');
     if (req.session.compair) {
        req.cookies.accesstoken = jwt.sign({
             "email": email,
             "password": password
-        }, privatekey, {
+        }, req.session.privatekey, {
             expiresIn: "120s"
         });
         return res.redirect('http://127.0.0.1:5500/views/dashBord.html'); 
@@ -20,6 +22,19 @@ function login(req, res, next) {
     }
 
 }
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now().toString() + file.originalname);
+    }
+});
+
+var upload = multer({storage: storage}).single('image');
+
+
 
 function signup(req, res, next) {
     let employeedetails = req.body;
@@ -31,7 +46,7 @@ function signup(req, res, next) {
             });
         }
 
-        res.status(200).send(`employee registration successfull`);
+        res.status(200).send(`employee registration successfull. <a href=http://127.0.0.1:5500/views/login.html>Go to LOG IN</a>`);
         res.end();
 
     });
