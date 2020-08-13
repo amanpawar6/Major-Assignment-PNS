@@ -27,8 +27,8 @@ function login(req, res, next) {
 
 }
 
-
 function signup(req, res, next) {
+    req.body.image = req.file.path;
     let employeedetails = req.body;
     var empinfo = new empdata(employeedetails);
     console.log(empinfo);
@@ -38,10 +38,8 @@ function signup(req, res, next) {
                 message: error
             });
         }
-
         res.status(200).send(`employee registration successfull. <a href=http://127.0.0.1:5500/views/login.html>Go to LOG IN</a>`);
         res.end();
-
     });
 }
 
@@ -64,5 +62,4 @@ module.exports = {
     login,
     signup,
     updateEmployee,
-   // upload
 }

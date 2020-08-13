@@ -1,4 +1,3 @@
-
 const mongoose=require("mongoose");
 
 const empSchema = new mongoose.Schema({
@@ -20,11 +19,8 @@ const empSchema = new mongoose.Schema({
         "post" : {type:String},
         "time" : { type : Date, default: Date.now }
     }]
-    
 });
 
 const empModel = mongoose.model('emp', empSchema);
 
 module.exports = empModel;
-
-

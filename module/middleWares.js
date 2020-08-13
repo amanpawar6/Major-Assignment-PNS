@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const empdata = require('../models/empModel');
+const empModel = require('../models/empModel');
 var saltRounds = 15;
 const jwt=require('jsonwebtoken');
 
@@ -12,17 +12,15 @@ function passwordHashing(req, res, next) {
             message: error
         });
         req.body.password = hash;
-
         next();
     });
 }
 
-
-function logincheckUserInfo(req, res, next) {
+function checkUserInfo(req, res, next) {
 
     let useremail = req.body.email;
     let password=req.body.password;
-    empdata.findOne({
+    empModel.findOne({
         "email": useremail
     }).exec(async function (error, data) {
         if (error) return res.status(500).send({
@@ -61,4 +59,4 @@ const authenticateToken = (req, res, next) => {
 
 module.exports = {
     passwordHashing,
-    logincheckUserInfo,authenticateToken,checkpost}
+    checkUserInfo,authenticateToken,checkpost}

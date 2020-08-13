@@ -10,9 +10,9 @@ var mongoose=require('mongoose');
 
 
 //var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var usersRouter = require('./routes/users');
 var employeeRouter=require('./routes/employeeRout');
-//var employerRouter=require('./routes/employerRouter');
+var employerRouter=require('./routes/employerRouter');
 
 var app = express();
 
@@ -37,6 +37,7 @@ app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname, 'views')));
 app.use(session({
   secret: 'optimusprime',
@@ -47,9 +48,9 @@ app.use(session({
 
 
 //app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 app.use('/',employeeRouter);
-//app.use('/employer',employerRouter);
+app.use('/employer',employerRouter);
 
 
 // catch 404 and forward to error handler
