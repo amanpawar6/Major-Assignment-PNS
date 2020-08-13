@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const employeedata = require('../models/employeeModel');
+const empModel = require('../models/empModel');
 var saltRounds = 15;
 
 
@@ -11,17 +11,15 @@ function passwordHashing(req, res, next) {
             message: error
         });
         req.body.password = hash;
-
         next();
     });
 }
-
 
 function checkUserInfo(req, res, next) {
 
     let useremail = req.body.email;
     let password=req.body.password;
-    employeedata.findOne({
+    empModel.findOne({
         "email": useremail
     }).exec(async function (error, data) {
         if (error) return res.status(500).send({

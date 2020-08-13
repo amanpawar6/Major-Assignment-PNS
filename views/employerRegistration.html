@@ -7,29 +7,21 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
-        <a href="/home/aman/Desktop/PNS/views/login.html">
-            <h1>login</h1>
-        </a>
-        <a href="">
-            <h1>employee SignUp</h1>
-        </a>
-    </div>
-    <div>
+    <div align = "center">
         <h1>Employer Registration</h1>
-        <form action="/login" target="_blank" method="post">
-            Email : <input type="text" id="email" name="email" placeholder="Email" required><br>
-            Password : <input type="password" id="password" name="password" placeholder="Password" required><br>
-            Name : <input type="password" id="Name" name="Name" placeholder="Name" required><br>
-            Company Name : <input type="password" id="Company_Name" name="Company_Name" placeholder="Company_Name"
-                required><br>
-            Phone Number : <input type="password" id="Phone_Number" name="Phone_Number" placeholder="Phone_Number"
-                required><br>
-            Address : <input type="password" id="Address" name="Address" placeholder="Address" required><br>
-            Designation : <input type="password" id="Designation" name="Designation" placeholder="Designation"
-                required><br>
-            <input type="button" id="loginbutton" value="submit">
-            <div id="name"></div>
+        <form action="http://localhost:3000/employer/registration" method="POST" enctype="multipart/form-data">
+            Email : <input type="text" id="email" name="email" placeholder="email" required><br><br>
+            Password : <input type="password" id="password" name="password" placeholder="password" required><br><br>
+            Name : <input type="text" id="name" name="name" placeholder="name" required><br><br>
+            Company Name : <input type="text" id="crt_cmpny" name="crt_cmpny" placeholder="crt_cmpny"
+                required><br><br>
+            Phone Number : <input type="text" id="phone_no" name="phone_no" placeholder="phone_no"
+                required><br><br>
+            Address : <input type="text" id="address" name="address" placeholder="address" required><br><br>
+            Designation : <input type="text" id="Designation" name="Designation" placeholder="Designation"
+                required><br><br>
+            Image : <input type="file" name='image' id="image">
+            <input type="submit" id="button" value="submit"><br>
         </form>
     </div>
 </body>
