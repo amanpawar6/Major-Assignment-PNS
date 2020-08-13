@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        async function postData(url = '', data = {}) {
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+
+        function showFriends() {
+            var qry = document.getElementById("searchtxt").value;
+            var lst = document.getElementById("suggestion");
+            postData('http://localhost:3000/findfriend', {
+                name: qry
+            }).then(data => {
+                data.forEach(p => {
+                    lst.innerHTML += p.name + "<button id=addfri>Add Friend</button>"
+                   
+                    let addf=document.getElementById("addfri").addEventListener('click', function(){ addFriend(p._id)})
+                    //addf.onclick=addFriend(p._id);
+                     /* " <button onclick='addFriend('" + p._id + "')'>Add friend</button></br>"; */
+                });
+            }).catch(function (error) {
+                console.warn("something went wrong");
+            });
+        }
+
+        function addFriend(id) {
+           /*  postdata('http://localhost:3000/addFriend', {
+                _id: id
+            }).then(data => {
+                alert("request sent");
+            }) */
+            console.log(id);
+            fetch('http://localhost:3000/addFriend', {
+                method: 'POST',
+                body:JSON.stringify({id}),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+            }).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                return Promise.reject(response);
+            }).catch(function (error) {
+                console.warn('Something went wrong.', error);
+            });
+
+
+
+
+
+
+
+        }
+    </script>
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div align="center">
+        <table>
+            <th>
+                <tr> <input type="txt" name="search" id="searchtxt" placeholder="search friends"><br></tr>
+                <button id="searchbtn" onclick="showFriends()">Search</button></tr>
+            </th>
+        </table>
+
+    </div>
+
+    <div id="suggestion" align="center">
+
+    </div>
+
+</body>
+
+</html>
