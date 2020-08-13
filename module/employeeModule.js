@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
-const employeedata = require('../models/employeeModel');
+const empdata = require('../models/empModel');
 const crypto=require('crypto');
+const multer=require('multer');
+const path=require('path');
 
 
 
@@ -10,36 +12,27 @@ function login(req, res, next) {
     let password=req.body.password;
     req.session.privatekey=crypto.randomBytes(64).toString('hex');
     if (req.session.compair) {
-       req.cookies.accesstoken = jwt.sign({
+       req.session.accesstoken = jwt.sign({
             "email": email,
             "password": password
         }, req.session.privatekey, {
-            expiresIn: "120s"
+            expiresIn: "120000s"
         });
-        return res.redirect('http://127.0.0.1:5500/views/dashBord.html'); 
+        req.session.save();
+        //console.log(req.session.accesstoken);
+        return res.redirect('http://127.0.0.1:5500/views/search.html'); 
     } else {
         return res.status(401).send("invalid password");
     }
 
 }
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now().toString() + file.originalname);
-    }
-});
-
-var upload = multer({storage: storage}).single('image');
-
-
 
 function signup(req, res, next) {
     let employeedetails = req.body;
-    var employee = new employeedata(employeedetails);
-    employee.save(function (error, response) {
+    var empinfo = new empdata(employeedetails);
+    console.log(empinfo);
+    empinfo.save(function (error) {
         if (error) {
             return res.status(422).send({
                 message: error
@@ -53,11 +46,23 @@ function signup(req, res, next) {
 }
 
 function updateEmployee(req,res,next){
-    console.log("haklfjalfjlaf");
+   
+    let employeeDetails = req.body;
+    let email=req.user.email;
+    console.log(email);
+    empdata.updateOne({
+        "email": email
+    }, {$set:employeeDetails}, function (error, data) {
+        if (error) {
+            console.log(error);
+        }
+        return res.status(200).send(`user updated on id:${email}`);
+    });
 }
 
 module.exports = {
     login,
     signup,
-    updateEmployee
+    updateEmployee,
+   // upload
 }

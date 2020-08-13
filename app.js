@@ -12,6 +12,7 @@ var mongoose=require('mongoose');
 //var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var employeeRouter=require('./routes/employeeRout');
+//var employerRouter=require('./routes/employerRouter');
 
 var app = express();
 
@@ -48,6 +49,7 @@ app.use(session({
 //app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/',employeeRouter);
+//app.use('/employer',employerRouter);
 
 
 // catch 404 and forward to error handler

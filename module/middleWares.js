@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
-const employeedata = require('../models/employeeModel');
+const empdata = require('../models/empModel');
 var saltRounds = 15;
+const jwt=require('jsonwebtoken');
 
 
 function passwordHashing(req, res, next) {
@@ -17,11 +18,11 @@ function passwordHashing(req, res, next) {
 }
 
 
-function checkUserInfo(req, res, next) {
+function logincheckUserInfo(req, res, next) {
 
     let useremail = req.body.email;
     let password=req.body.password;
-    employeedata.findOne({
+    empdata.findOne({
         "email": useremail
     }).exec(async function (error, data) {
         if (error) return res.status(500).send({
@@ -38,13 +39,11 @@ function checkUserInfo(req, res, next) {
 
 
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    console.log(authHeader)
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) {
+    const authHeader = req.session.accesstoken;
+    if (authHeader == null) {
         return res.status(401).send("Unauthorized")
     };
-    jwt.verify(token,req.session.privatekey, (error, user) => {
+    jwt.verify(authHeader,req.session.privatekey, (error, user) => {
         if (error) {
             return res.status(403).send({
                 message: error
@@ -54,8 +53,12 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 }
-
+ function checkpost(req,res,next){
+     if(!req.boby){
+         return res.status(422).send("nothing to post");
+     }
+ }
 
 module.exports = {
     passwordHashing,
-    checkUserInfo,authenticateToken}
+    logincheckUserInfo,authenticateToken,checkpost}
