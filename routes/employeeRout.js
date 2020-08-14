@@ -47,13 +47,23 @@ const upload = multer({storage: storage, limits: {
 
 //router.post('/updatepost',middleware.authenticateToken,postmodule.savePost);
 router.post('/login', middleware.checkUserInfo,loginmodule.login);
-router.post('/signup', upload, employerModule.validatingDetails, employerModule.employerExists, middleware.passwordHashing, loginmodule.signup);
-router.post('/updateemployee',loginmodule.updateEmployee);
 
-router.post('/findfriend',connectionmodule.findFriends);
-router.post('/addfriend',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.addfriend);
-router.post('/pendingrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.pendingFriends);
-router.post('/acceptedrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.acceptedFriends);
-router.post('/user/post',middleware.authenticateToken,middleware.checkpost,postmodule.savePost)
+router.post('/signup', upload, employerModule.validatingImage, employerModule.validatingDetails, employerModule.employerExists, middleware.passwordHashing, loginmodule.signup);
+
+router.post('/updateemployee',middleware.authenticateToken,loginmodule.updateEmployee);
+
+router.post('/findfriend',middleware.authenticateToken,connectionmodule.findFriends);
+
+router.post('/addfriend',middleware.authenticateToken,connectionmodule.findIdfromemail,middleware.checkFriend, connectionmodule.addfriend);
+
+router.get('/pendingrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.showPendingFriends);
+
+router.get('/acceptedrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.showAcceptedFriends);
+
+router.post('/acceptrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.accepted);
+
+router.post('/rejectrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.rejected)
+
+router.post('/user/addpost',postmodule.savePost)
 
 module.exports=router;

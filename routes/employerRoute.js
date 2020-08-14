@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const employerModule = require('../module/employerModule');
 const middleWares = require('../module/middleWares');
+const connectmodel=require('../module/connectionModule');
+const employeeModule = require('../module/employeeModule');
 var path = require('path');
 var multer = require('multer');
 
@@ -35,13 +37,14 @@ const upload = multer({storage: storage, limits: {
     checkFileType(file, cb);
   }}).single('image');
 
-  
-router.post('/registration', upload, employerModule.validatingDetails, employerModule.employerExists, middleWares.passwordHashing, employerModule.employerRegister);
 
-router.post('/getUserInfo', middleWares.authenticateToken, employerModule.providingUserInfo);
 
-router.get('/searchedPeople', employerModule.searchedPeople);
+router.post('/registration', upload, employerModule.validatingImage, employerModule.validatingDetails, employerModule.employerExists, middleWares.passwordHashing, employerModule.employerRegister);
 
-router.post('/posts', )
+router.post('/updateEmployer', middleWares.authenticateToken, connectmodel.findIdfromemail, employeeModule.updateEmployee)
+
+router.post('/getUserInfo', middleWares.authenticateToken, connectmodel.findIdfromemail, employerModule.providingUserInfo);
+
+router.get('/Showposts', middleWares.authenticateToken, connectmodel.findIdfromemail, employerModule.posts);
 
 module.exports = router;

@@ -1,6 +1,9 @@
 const empModel = require('../models/empModel');
 const connect = require('../models/connectionModel');
+var validator = require("email-validator");
+var ObjectID = require('mongodb').ObjectID;
 var fs = require('fs');
+
 
 function validatingEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -12,15 +15,23 @@ function validatingPhone(phone){
 	return re.test(phone);
 };
 
+const validatingImage = (req, res, next) =>{
+    if(!(req.file)){
+        return res.send('Please select an image to upload');
+    }
+    else{
+        next();
+    }
+}
+
 const validatingDetails = (req, res, next) => {
-    if(validatingEmail(req.body.email) && validatingPhone(parseInt(req.body.phone_no))){
+    if(validatingEmail(req.body.email) && validatingPhone(req.body.phone_no)){
         next();
     }
     else{
         fs.unlink(req.file.path, function (err) {
-            if (err) throw err;
-            console.log('File deleted!');
-            return res.send("Please Provide correct email or phone number")
+            if (err) return res.status(422).send({msg:"something went wrong"})
+            return res.status(422).send({msg:'Please Provide correct email or phone number'})
         })
         
     }
@@ -37,7 +48,6 @@ var employerExists = (req, res, next) => {
         if (data.length > 0) {
             fs.unlink(req.file.path, function (err) {
                 if (err) throw err;
-                console.log('File deleted!');
                 return res.send(409, {
                     message: "user Already Exists"
                 })
@@ -57,29 +67,13 @@ var employerRegister = (req, res, next) => {
                 message: "Not Found"
             })
         }
-        req.session.user = data;
-        console.log(data);
-        res.send(200);
+        res.status(200).send({msg:"data saved"});
     })
 }
 
 const providingUserInfo = (req, res, next) => {
-    var user = req.user;
-    console.log(req.user);
-    empModel.findById(user.id, (err, data) => {
-        if(err){
-            return res.send(404);
-        }
-        return res.send(data);
-    })
-}
-
-const searchedPeople = (req, res, next) => {
-    var user = req.user;
-    var requestedUsers = req.query.name; 
-    console.log(req.user);
-    empModel.find({name : {'$regex': requestedUsers}}, (err, data) => {
-        if(err){
+    empModel.findById(req.id, (err, data) => {
+        if (err) {
             return res.send(404);
         }
         return res.send(data);
@@ -87,19 +81,57 @@ const searchedPeople = (req, res, next) => {
 }
 
 const posts = (req, res, send) => {
-    var user = req.user.id;
+    var sampledata = [];
+    let id = new ObjectID(req.id);
     connect.find({
-        $and: [{
-            "requester": "5f33e1617e6a7033a4fc8e82",
-            "status": "accepted"
-        }]
+        $and:[{"requester": id},{ "status": "accepted"}]
+           
     }).select('receiver').exec(function (err, data) {
-        for(let i=0;i<data.length;i++){
-            empModel.findById(data[i].receiver).exec(function(err,value){
-                if(err)return console.log(err);
-                 return res.status(200).send(value.post);
-            })
+        console.log(data);
+       if(data.length > 0){
+        for (let i = 0; i < data.length; i++) {
+            empModel.findById(data[i].receiver).exec(async function (err, data) {
+                
+                let receiverarray = data.map(acceptedFriends => new ObjectID(acceptedFriends.receiver[0] + ""))
+                await empdata.find({
+                    "_id": {
+                        $in: receiverarray
+                    }
+                }).exec(function (err, value) {
+                    if (err) {
+                        return res.status(422).send("something went wrong");
+                    }
+                    sampledata = value.map(r => r.posts);
+                    console.log(sampledata);
+                   return res.status(200).send(sampledata);
+                })
+            });
+        }  
+        }else{
+            var msg = "No Posts are available"
+            sampledata.push(msg);
+            return res.status(200).send(sampledata);
         }
+       }
+        
+    );
+}
+
+function updateEmployer(req, res, next) {
+
+    let employerDetails = req.body;
+    let email = req.user.email;
+    empModel.updateOne({
+        "email": email
+    }, {
+        $set: employerDetails
+    }, function (error, data) {
+        if (error) {
+            return res.status(500).send({
+                message: error
+            });
+        }
+        return res.status(200).send(`user updated on id:${email}`);
     });
 }
 
@@ -108,5 +140,7 @@ module.exports = {
     employerExists,
     providingUserInfo,
     validatingDetails,
-    searchedPeople,
+    posts,
+    validatingImage,
+    updateEmployer
 }

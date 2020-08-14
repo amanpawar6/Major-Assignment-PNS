@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         async function postData(url = '', data = {}) {
+            var token = window.localStorage.getItem('token');
             const response = await fetch(url, {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
                 credentials: 'same-origin',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 },
                 redirect: 'follow',
                 referrerPolicy: 'no-referrer',
@@ -31,42 +33,21 @@
                     lst.innerHTML += p.name + "<button id=addfri>Add Friend</button>"
                    
                     let addf=document.getElementById("addfri").addEventListener('click', function(){ addFriend(p._id)})
-                    //addf.onclick=addFriend(p._id);
-                     /* " <button onclick='addFriend('" + p._id + "')'>Add friend</button></br>"; */
                 });
             }).catch(function (error) {
-                console.warn("something went wrong");
+                console.log(error);
             });
         }
 
         function addFriend(id) {
-           /*  postdata('http://localhost:3000/addFriend', {
-                _id: id
-            }).then(data => {
-                alert("request sent");
-            }) */
-            console.log(id);
-            fetch('http://localhost:3000/addFriend', {
-                method: 'POST',
-                body:JSON.stringify({id}),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8'
-                }
-            }).then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                }
-                return Promise.reject(response);
+    
+            postData('http://localhost:3000/addfriend', {
+                id: id
+             }).then(data => {
+                alert(data.msg);
             }).catch(function (error) {
-                console.warn('Something went wrong.', error);
+               alert(error);
             });
-
-
-
-
-
-
-
         }
     </script>
     <title>Document</title>

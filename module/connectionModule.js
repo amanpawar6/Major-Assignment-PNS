@@ -29,48 +29,52 @@ function findIdfromemail(req, res, next) {
 }
 
 
-
 function addfriend(req, res, next) {
-    console.log(req.id);
-    console.log(req.body.id);
+    let id = new ObjectID(req.id);
+    let receiverid = new ObjectID(req.body.id);
     var involveusers = {
-        "requester": req.id,
-        "receiver": req.body.id,
+        "requester": id,
+        "receiver": receiverid,
         "status": "pending"
     }
+
     var connectedUsers = new connect(involveusers);
-    console.log(connectedUsers);
     connectedUsers.save(function (error) {
         if (error) {
             return res.status(422).send({
-                message: error
+                msg: "somthing went wrong"
             });
         }
-        return res.status(200).send(`friend request sent. <a href=http://127.0.0.1:5500/views/dashBord.html></a>`);
+        return res.status(200).send({
+            msg: 'friend request sent.'
+        });
     });
 }
 
 
-function pendingFriends(req, res, next) {
-    var sampledata = [];
+function showPendingFriends(req, res, next) {
+    let id = new ObjectID(req.id);
+
     connect.find({
         $and: [{
-            "requester": req.id,
-            "status": "pending"
-        }]
-    }).select('receiver').exec(async function (err, data) {
-        let receiverarray = data.map(p => new ObjectID(p.receiver[0] + ""))
-        console.log(receiverarray);
+                "receiver": id
+            },
+            {
+                "status": "pending"
+            }
+        ]
+    }).select('requester').exec(async function (err, data) {
+        let requesterarray = data.map(p => new ObjectID(p.requester[0] + ""))
         await empdata.find({
             "_id": {
-                $in: receiverarray
+                $in: requesterarray
             }
         }).exec(function (err, value) {
             if (err) {
                 return res.status(422).send("something went wrong");
             }
-            sampledata = value.map(r => r.name);
-            return res.status(200).send(sampledata);
+            //sampledata = value.map(r => r.name);
+            return res.status(200).send(value);
 
         })
 
@@ -78,17 +82,21 @@ function pendingFriends(req, res, next) {
 }
 
 
-function acceptedFriends(req, res, next) {
-
-    var sampledata = [];
+function showAcceptedFriends(req, res, next) {
+    let id = new ObjectID(req.id);
     connect.find({
         $and: [{
-            "requester": req.id,
-            "status": "accepted"
-        }]
-    }).select('receiver').exec(function (err, data) {
+                "requester": id
+            },
+            {
+                "status": "accepted"
+            }
+        ]
+    }).select('receiver').exec(async function (err, data) {
         for (let i = 0; i < data.length; i++) {
-            empdata.findById(data[i].receiver).exec(async function (err, data) {
+            if (err) return res.send(err)
+            await empdata.findById(data[i].receiver).exec(async function (err, data) {
+
                 let receiverarray = data.map(p => new ObjectID(p.receiver[0] + ""))
                 await empdata.find({
                     "_id": {
@@ -99,13 +107,68 @@ function acceptedFriends(req, res, next) {
                         return res.status(422).send("something went wrong");
                     }
                     sampledata = value.map(r => r.name);
-                   return res.status(200).send(sampledata);
+                    return res.status(200).send(sampledata);
 
                 })
 
             });
         }
     });
+}
+
+function accepted(req, res, next) {
+    let id = (req.id);
+    let receiverid = (req.body.id);
+    let status = "accepted";
+    console.log(receiverid, id);
+    connect.updateOne({
+                "requester": id,
+
+                "receiver": receiverid,
+
+                "status": "pending"
+            }
+
+            , {
+                $set: {
+                    "status": status
+                }
+            })
+        .exec(function (error, data) {
+            console.log(data);
+            if (error) return res.status().send("something went wrong");
+            return res.status(200).send({
+                msg: "friend request accepted"
+            });
+        });
+}
+
+
+function rejected(req, res, next) {
+    let id = new ObjectID(req.id);
+    let receiverid = new ObjectID(req.body.id);
+    connect.updateOne({
+            $and: [{
+                    "requester": id
+                },
+                {
+                    "receiver": receiverid
+                },
+                {
+                    "status": "pending"
+                }
+            ]
+        }, {
+            $set: {
+                "status": "accepted"
+            }
+        })
+        .exec(function (error) {
+            if (error) return res.status().send("something went wrong");
+            return res.status(200).send({
+                msg: "friend request rejected"
+            });
+        })
 }
 
 
@@ -134,7 +197,9 @@ function acceptedFriends(req, res, next) {
 module.exports = {
     findFriends,
     addfriend,
-    pendingFriends,
-    acceptedFriends,
-    findIdfromemail
+    showPendingFriends,
+    showAcceptedFriends,
+    findIdfromemail,
+    accepted,
+    rejected
 }

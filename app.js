@@ -12,7 +12,7 @@ var mongoose=require('mongoose');
 //var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var employeeRouter=require('./routes/employeeRout');
-var employerRouter=require('./routes/employerRouter');
+var employerRouter=require('./routes/employerRoute');
 
 var app = express();
 
