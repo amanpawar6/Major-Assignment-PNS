@@ -1,22 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function logIn() {
+            fetch("http://localhost:3000/login", {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: document.getElementById('emailtxt').value,
+                    password: document.getElementById('passtxt').value
+
+                }),
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            }).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                return Promise.reject(response);
+            }).then(function (data) {
+               // window.localStorage.setItem()
+               window.localStorage.setItem('token', data.token);
+               window.location.replace('http://127.0.0.1:5500/views/dashBord.html');
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    </script>
     <title>Document</title>
 </head>
+
 <body>
-    <h1>LOG IN</h1>
-    <form id="log_in_form" action="http://localhost:3000/login" method="POST">
-        Email : <input type="text" name="email" placeholder="Enter Email"><br><br>
-        Password : <input type="password" name="password" placeholder="Enter Password"><br><br>
-        Role : <select name="role" id="role">
-            <option value="Employee">Employee</option>
-            <option value="Employer">Employer</option>
-          </select><br><br>
-        <input type="submit" id="loginbtn" value="LOG IN"><br>
-        <a href="">employee Signup</a><br>
-        <a href="">employer Signup</a><br>
-      </form>
+
+    <!-- <form id="log_in_form" action="http://localhost:3000/login" method="POST"> -->
+    <div align="center">
+        <h1>LOG IN</h1>
+        <table>
+            <th>
+                <tr><input type="text" id="emailtxt" name="email" placeholder="Enter Email"><br><br></tr>
+                <tr><input type="password" id="passtxt" name="password" placeholder="Enter Password"><br><br></tr>
+                <tr><input type="submit" id="loginbtn" value="LOG IN" onclick="logIn()"></tr>
+            </th>
+        </table>
+        <a href="http://127.0.0.1:5500/views/type.html">Register NOW!!!!</a>
+    </div>
+
+
+    <!-- </form> -->
 </body>
+
 </html>

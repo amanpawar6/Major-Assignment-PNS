@@ -1,19 +1,22 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var bodyparser=require('body-parser');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
 var mongoose=require('mongoose');
+var helmet=require('helmet')
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
 var employeeRouter=require('./routes/employeeRout');
+var employerRouter=require('./routes/employerRoute');
 
 var app = express();
-
+app.use(helmet());
 //mongo db server connection
 mongoose.connect('mongodb://localhost/finalproject',{ useNewUrlParser: true ,useUnifiedTopology: true});
 const db = mongoose.connection;
@@ -35,12 +38,20 @@ app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname, 'views')));
+app.use(session({
+  secret: 'optimusprime',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
 
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/employee',employeeRouter);
+//app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+app.use('/',employeeRouter);
+app.use('/employer',employerRouter);
 
 
 // catch 404 and forward to error handler
