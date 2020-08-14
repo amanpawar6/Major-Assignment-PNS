@@ -10,30 +10,31 @@ function validatingEmail(email) {
     return re.test(email);
 }
 
-function validatingPhone(phone){
-	var re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-	return re.test(phone);
+function validatingPhone(phone) {
+    var re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    return re.test(phone);
 };
 
-const validatingImage = (req, res, next) =>{
-    if(!(req.file)){
+const validatingImage = (req, res, next) => {
+    if (!(req.file)) {
         return res.send('Please select an image to upload');
-    }
-    else{
+    } else {
         next();
     }
 }
 
 const validatingDetails = (req, res, next) => {
-    if(validatingEmail(req.body.email) && validatingPhone(req.body.phone_no)){
+    if (validatingEmail(req.body.email) && validatingPhone(req.body.phone_no)) {
         next();
-    }
-    else{
+    } else {
         fs.unlink(req.file.path, function (err) {
-            if (err) return res.status(422).send({msg:"something went wrong"})
-            return res.status(422).send({msg:'Please Provide correct email or phone number'})
+            if (err) return res.status(422).send({
+                msg: "something went wrong"
+            })
+            return res.status(422).send({
+                msg: 'Please Provide correct email or phone number'
+            })
         })
-        
     }
 }
 
@@ -67,7 +68,9 @@ var employerRegister = (req, res, next) => {
                 message: "Not Found"
             })
         }
-        res.status(200).send({msg:"data saved"});
+        res.status(200).send({
+            msg: "data saved"
+        });
     })
 }
 
@@ -80,41 +83,65 @@ const providingUserInfo = (req, res, next) => {
     })
 }
 
+// const posts = (req, res, send) => {
+//     var sampledata = [];
+//     let id = new ObjectID(req.id);
+//     connect.find({"requester": id,"status": "accepted"}).select('receiver').exec(function (err, data) {
+//         console.log(data);
+//        if(data.length > 0){
+//         for (let i = 0; i < data.length; i++) {
+//             empModel.findById(data[i].receiver).exec(async function (err, data) {
+
+//                 let receiverarray = data.map(acceptedFriends => new ObjectID(acceptedFriends.receiver[0] + ""))
+//                 await empdata.find({
+//                     "_id": {
+//                         $in: receiverarray
+//                     }
+//                 }).exec(function (err, value) {
+//                     if (err) {
+//                         return res.status(422).send("something went wrong");
+//                     }
+//                     sampledata = value.map(r => r.posts);
+//                     console.log(sampledata);
+//                    return res.status(200).send(sampledata);
+//                 })
+//             });
+//         }  
+//         }else{
+//             var msg = "No Posts are available"
+//             sampledata.push(msg);
+//             return res.status(200).send(sampledata);
+//         }
+//        }        
+//     );
+// }
+
 const posts = (req, res, send) => {
-    var sampledata = [];
     let id = new ObjectID(req.id);
     connect.find({
-        $and:[{"requester": id},{ "status": "accepted"}]
-           
-    }).select('receiver').exec(function (err, data) {
-        console.log(data);
-       if(data.length > 0){
-        for (let i = 0; i < data.length; i++) {
-            empModel.findById(data[i].receiver).exec(async function (err, data) {
-                
-                let receiverarray = data.map(acceptedFriends => new ObjectID(acceptedFriends.receiver[0] + ""))
-                await empdata.find({
-                    "_id": {
-                        $in: receiverarray
-                    }
-                }).exec(function (err, value) {
-                    if (err) {
-                        return res.status(422).send("something went wrong");
-                    }
-                    sampledata = value.map(r => r.posts);
-                    console.log(sampledata);
-                   return res.status(200).send(sampledata);
-                })
-            });
-        }  
-        }else{
-            var msg = "No Posts are available"
-            sampledata.push(msg);
-            return res.status(200).send(sampledata);
-        }
-       }
-        
-    );
+        "requester": id,
+        "status": "accepted"
+    }, (err, data) => {
+        var friendsId = data.map(item => {
+            return item.receiver[0];
+        })
+        console.log(friendsId);
+        var friendsPosts = friendsId.map(item => {
+            var tempposts = []
+            empModel.findById(ObjectID(item), (err, data) => {
+                if (err) {
+                    return res.send({
+                        msg: "err"
+                    })
+                }
+                if (data.post.length >= 1) {
+                    tempposts.push(data.post[0]);
+                }
+            })
+            return tempposts;
+        })
+        console.log(friendsPosts, friendsPosts.length);
+    })
 }
 
 function updateEmployer(req, res, next) {
@@ -135,6 +162,43 @@ function updateEmployer(req, res, next) {
     });
 }
 
+const deletePreviousPicture = (req, res, next) => {
+    var email = req.query.email; 
+    empModel.findOne({
+        "email": email
+    }, (err, data) => {
+        if (err) {
+            return res.status(500).send({
+                message: error
+            });
+        }
+        console.log(data);
+        fs.unlink(data.image, function (err) {
+            if (err) return res.status(422).send({
+                msg: "something went wrong"
+            })
+            next();
+            })
+        })
+}
+
+function updatePicture(req, res, next) {
+    employerDetails = req.file.path;
+    let email = req.query.email;
+    empModel.updateOne({
+        "email": email
+    }, {
+        $set: {"image" : employerDetails}
+    }, (error, data) => {
+        if (error) {
+            return res.status(500).send({
+                message: error
+            });
+        }
+        return res.status(200).send(`user updated on id:${email}`);
+    });
+}
+
 module.exports = {
     employerRegister,
     employerExists,
@@ -142,5 +206,7 @@ module.exports = {
     validatingDetails,
     posts,
     validatingImage,
-    updateEmployer
+    updateEmployer,
+    updatePicture,
+    deletePreviousPicture
 }

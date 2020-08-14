@@ -5,8 +5,9 @@ const empModel=require('../models/empModel');
 
 
 function savePost(req,res,next){
-    let postdetails = req.body;
+    let postdetails = req.body.post;
     let email=req.user.email;
+    console.log(postdetails, ">>>>>>", email)
     
     empModel.updateOne({
         "email": email

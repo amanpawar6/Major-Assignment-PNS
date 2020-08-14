@@ -122,18 +122,16 @@
             });
         }
 
-        postData('http://localhost:3000/employer/getUserInfo')
+        getData('http://localhost:3000/employer/getUserInfo')
             .then(data => {
                 document.getElementById("name").innerHTML = data.name;
                 document.getElementById("email").innerHTML = data.email;
-                document.getElementById("crt_cmpny").innerHTML = data.crt_cmpny;
-                console.log(data.image);
                 var img = document.createElement("IMG");
-                img.setAttribute("src", "file:///home/aman/Desktop/PNSS/" + data.image);
+                img.setAttribute("src", "file:///home/aman/Desktop/PNSS/"+ data.image);
                 img.setAttribute("width", "180");
                 img.setAttribute("height", "150");
                 img.setAttribute("alt", "image");
-                document.getElementById("image").appendChild(img);
+                document.getElementById("profilePicture").appendChild(img); 
             }).catch(function (error) {
                 console.warn("something went wrong");
             });
@@ -160,6 +158,10 @@
             localStorage.clear();
             redirect('./login.html')
         }
+        
+        function pageRedirect(){
+            window.location.href = '/home/aman/Desktop/PNSS/views/uploadPicture.html';
+        }
 
     </script>
 </head>
@@ -173,11 +175,10 @@
                     <h1>welcome to dashbord</h1>
                 </tr>
             </th>
-
+        </table>
+        <p id="profilePicture"></p>
+        <table id="Details">
             <th>
-                <tr>
-                    <p id="image"></p>
-                </tr>
                 <tr>
                     <p id="name"></p>
                 </tr>
@@ -186,7 +187,9 @@
                 </tr>
             </th>
         </table>
-
+        <div>
+            <input type="submit" name="changePic" id="changePic" value="Change Profile Picture" onclick="pageRedirect()">
+        </div><br><br><br><br>
         <div align="center">
             <table>
                 <th>
@@ -209,7 +212,7 @@
     <div>
         post save
         <textarea id="postContent" name="postContent" rows="4" cols="50"></textarea>
-        <input type="button" name="postBtn" id="postBtn" value="Post" onclick="">
+        <input type="button" name="postBtn" id="postBtn" value="Post" onclick="savePosts()">
     </div>
     <div>
         logout button

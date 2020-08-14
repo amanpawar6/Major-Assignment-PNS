@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         function logIn() {
+            var token = window.localStorage.getItem('token');
             fetch("http://localhost:3000/login", {
                 method: 'POST',
                 body: JSON.stringify({
                     email: document.getElementById('emailtxt').value,
                     password: document.getElementById('passtxt').value
-
                 }),
                 headers: {
-                    'Content-type': 'application/json'
-                }
+                    'Content-type': 'application/json',
+                    'Authorization' : 'Bearer' + token
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer'
             }).then(function (response) {
                 if (response.ok) {
                     return response.json();
@@ -24,7 +27,7 @@
             }).then(function (data) {
                // window.localStorage.setItem()
                window.localStorage.setItem('token', data.token);
-               window.location.replace('http://127.0.0.1:5500/views/dashBord.html');
+               window.location.replace('file:///home/aman/Desktop/PNSS/views/dashBord.html');
             }).catch(function (error) {
                 console.log(error);
             });
@@ -45,7 +48,7 @@
                 <tr><input type="submit" id="loginbtn" value="LOG IN" onclick="logIn()"></tr>
             </th>
         </table>
-        <a href="file:///home/aman/Desktop/PNSS/views/dashBord.html">Register NOW!!!!</a>
+        <a href="file:///home/aman/Desktop/PNSS/views/type.html">Register NOW!!!!</a>
     </div>
 
 

@@ -43,8 +43,10 @@ router.post('/registration', upload, employerModule.validatingImage, employerMod
 
 router.post('/updateEmployer', middleWares.authenticateToken, connectmodel.findIdfromemail, employeeModule.updateEmployee)
 
-router.post('/getUserInfo', middleWares.authenticateToken, connectmodel.findIdfromemail, employerModule.providingUserInfo);
+router.get('/getUserInfo', middleWares.authenticateToken, connectmodel.findIdfromemail, employerModule.providingUserInfo);
 
 router.get('/Showposts', middleWares.authenticateToken, connectmodel.findIdfromemail, employerModule.posts);
+
+router.post('/uploadpicture', upload, employerModule.validatingImage, employerModule.deletePreviousPicture, employerModule.updatePicture)
 
 module.exports = router;

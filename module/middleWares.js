@@ -92,6 +92,27 @@ function checkFriend(req, res, next) {
     })
 }
 
+const validatingAge = (req, res, next) => {
+    if(req.body.age >= 18 && req.body.age <= 60){
+        next();
+    }else{
+        fs.unlink(req.file.path, function (err) {
+            if (err) return res.status(422).send({msg:"something went wrong"})
+            return res.status(422).send({msg:"Please provide valid age(between 18-60)"})
+        })
+    }
+}
+
+const validatingPhoneNumber = (req, res, next) => {
+    if(req.body.phone_no.length = 10){
+        next();
+    }else{
+        fs.unlink(req.file.path, function (err) {
+            if (err) return res.status(422).send({msg:"something went wrong"})
+            return res.status(422).send({msg:"Please enter valid 10 digits Phone Number"})
+        })
+    }
+}
 
 module.exports = {
     passwordHashing,
@@ -99,4 +120,6 @@ module.exports = {
     authenticateToken,
     checkpost,
     checkFriend,
+    validatingAge,
+    validatingPhoneNumber
 }
