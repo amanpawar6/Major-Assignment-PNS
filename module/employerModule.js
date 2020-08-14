@@ -163,7 +163,8 @@ function updateEmployer(req, res, next) {
 }
 
 const deletePreviousPicture = (req, res, next) => {
-    var email = req.query.email; 
+    var email = req.query.email;
+    console.log(email);
     empModel.findOne({
         "email": email
     }, (err, data) => {
