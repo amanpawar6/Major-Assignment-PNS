@@ -83,66 +83,66 @@ const providingUserInfo = (req, res, next) => {
     })
 }
 
-// const posts = (req, res, send) => {
-//     var sampledata = [];
-//     let id = new ObjectID(req.id);
-//     connect.find({"requester": id,"status": "accepted"}).select('receiver').exec(function (err, data) {
-//         console.log(data);
-//        if(data.length > 0){
-//         for (let i = 0; i < data.length; i++) {
-//             empModel.findById(data[i].receiver).exec(async function (err, data) {
-
-//                 let receiverarray = data.map(acceptedFriends => new ObjectID(acceptedFriends.receiver[0] + ""))
-//                 await empdata.find({
-//                     "_id": {
-//                         $in: receiverarray
-//                     }
-//                 }).exec(function (err, value) {
-//                     if (err) {
-//                         return res.status(422).send("something went wrong");
-//                     }
-//                     sampledata = value.map(r => r.posts);
-//                     console.log(sampledata);
-//                    return res.status(200).send(sampledata);
-//                 })
-//             });
-//         }  
-//         }else{
-//             var msg = "No Posts are available"
-//             sampledata.push(msg);
-//             return res.status(200).send(sampledata);
-//         }
-//        }        
-//     );
-// }
-
 const posts = (req, res, send) => {
+    var sampledata = [];
     let id = new ObjectID(req.id);
-    connect.find({
-        "requester": id,
-        "status": "accepted"
-    }, (err, data) => {
-        var friendsId = data.map(item => {
-            return item.receiver[0];
-        })
-        console.log(friendsId);
-        var friendsPosts = friendsId.map(item => {
-            var tempposts = []
-            empModel.findById(ObjectID(item), (err, data) => {
-                if (err) {
-                    return res.send({
-                        msg: "err"
-                    })
-                }
-                if (data.post.length >= 1) {
-                    tempposts.push(data.post[0]);
-                }
-            })
-            return tempposts;
-        })
-        console.log(friendsPosts, friendsPosts.length);
-    })
+    connect.find({"requester": id,"status": "accepted"}).select('receiver').exec(function (err, data) {
+        console.log(data);
+       if(data.length > 0){
+        for (let i = 0; i < data.length; i++) {
+            empModel.findById(data[i].receiver).exec(async function (err, data) {
+
+                let receiverarray = data.map(acceptedFriends => new ObjectID(acceptedFriends.receiver[0] + ""))
+                await empdata.find({
+                    "_id": {
+                        $in: receiverarray
+                    }
+                }).exec(function (err, value) {
+                    if (err) {
+                        return res.status(422).send("something went wrong");
+                    }
+                    sampledata = value.map(r => r.posts);
+                    console.log(sampledata);
+                   return res.status(200).send(sampledata);
+                })
+            });
+        }  
+        }else{
+            var msg = "No Posts are available"
+            sampledata.push(msg);
+            return res.status(200).send({msg : msg});
+        }
+       }        
+    );
 }
+
+// const posts = (req, res, send) => {
+//     let id = new ObjectID(req.id);
+//     connect.find({
+//         "requester": id,
+//         "status": "accepted"
+//     }, (err, data) => {
+//         var friendsId = data.map(item => {
+//             return item.receiver[0];
+//         })
+//         console.log(friendsId);
+//         var friendsPosts = friendsId.map(item => {
+//             var tempposts = []
+//             empModel.findById(ObjectID(item), (err, data) => {
+//                 if (err) {
+//                     return res.send({
+//                         msg: "err"
+//                     })
+//                 }
+//                 if (data.post.length >= 1) {
+//                     tempposts.push(data.post[0]);
+//                 }
+//             })
+//             return tempposts;
+//         })
+//         console.log(friendsPosts, friendsPosts.length);
+//     })
+// }
 
 function updateEmployer(req, res, next) {
 
