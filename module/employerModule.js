@@ -144,6 +144,32 @@ const posts = (req, res, send) => {
 //     })
 // }
 
+// function displayposts(req, res, send) {
+//     let id = req.id;//new ObjectID("5f33dfc211676830184588e6");
+//     connect.find({
+//             "requester": id,
+//             "status": "accepted"
+//         }
+
+//     ).select('receiver').exec(async function (error, data) {
+
+//         if (error) return console.log(error);
+
+//         if (data.length > 0) {
+
+//             let receiverIdArray = data.map(val => (val.receiver[0]));
+//             console.log(receiverIdArray)
+//             let postdata = await receiverIdArray.map(function (crr, index, arr) {
+//                 let receiverid = receiverIdArray[index]
+//                 empModel.findById(receiverid).select('post').exec(function (error, data) {
+//                     if (error) return console.log(error);
+//                         console.log(data.post);
+//                 })
+//             })
+//         }
+//     });
+// }
+
 function updateEmployer(req, res, next) {
 
     let employerDetails = req.body;

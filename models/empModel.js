@@ -15,11 +15,10 @@ const empSchema = new mongoose.Schema({
     "crt_cmpny": String,
     "Designation": String,
     "image" : String,
-    "post" : [String],
-    // "post" : [{ 
-    //     "post" : {type:String},
-    //     "time" : { type : Date, default: Date.now }
-    // }]
+    "post" : [String]/* [{ 
+        "post" : {type:String},
+        "time" : { type : Date, default: Date.now }
+    }] */
 });
 
 const empModel = mongoose.model('emp', empSchema);

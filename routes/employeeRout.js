@@ -60,10 +60,11 @@ router.get('/pendingrequest',middleware.authenticateToken,connectionmodule.findI
 
 router.get('/acceptedrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.showAcceptedFriends);
 
-router.post('/acceptrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.accepted);
+router.post('/acceptrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.accept);
 
-router.post('/rejectrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.rejected)
+router.post('/rejectrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.reject)
 
-router.post('/user/addpost', middleware.authenticateToken, postmodule.savePost)
+router.post('/user/addpost',postmodule.savePost)
 
 module.exports=router;
+//

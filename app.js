@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
 var mongoose=require('mongoose');
-var helmet = require('helmet');
+var helmet=require('helmet')
 
 
 //var indexRouter = require('./routes/index');
@@ -16,7 +16,7 @@ var employeeRouter=require('./routes/employeeRout');
 var employerRouter=require('./routes/employerRoute');
 
 var app = express();
-
+app.use(helmet());
 //mongo db server connection
 mongoose.connect('mongodb://localhost/finalproject',{ useNewUrlParser: true ,useUnifiedTopology: true});
 const db = mongoose.connection;
@@ -31,7 +31,6 @@ db.once('open', function() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(helmet())
 app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());

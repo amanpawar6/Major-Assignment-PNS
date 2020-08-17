@@ -56,14 +56,13 @@ function showPendingFriends(req, res, next) {
     let id = new ObjectID(req.id);
 
     connect.find({
-        $and: [{
-                "receiver": id
-            },
-            {
+        
+                "receiver": id,
+            
                 "status": "pending"
-            }
-        ]
+            
     }).select('requester').exec(async function (err, data) {
+        console.log(data);
         let requesterarray = data.map(p => new ObjectID(p.requester[0] + ""))
         await empdata.find({
             "_id": {
@@ -83,20 +82,50 @@ function showPendingFriends(req, res, next) {
 
 
 function showAcceptedFriends(req, res, next) {
-    let id = new ObjectID(req.id);
+    let id = new ObjectID("5f33dfc211676830184588e6");//new ObjectID(req.id);
+    console.log(id);
     connect.find({
-        $and: [{
-                "requester": id
-            },
-            {
+                "requester": id,
+           
                 "status": "accepted"
             }
-        ]
-    }).select('receiver').exec(async function (err, data) {
-        for (let i = 0; i < data.length; i++) {
+        
+    ).exec( async function (err, data) {
+
+      let receiverIdArray= data.map(value=>value.receiver[0]);
+            console.log(receiverIdArray);
+            await empdata.find({
+                "_id": {
+                    $in: receiverIdArray
+                }
+            }).exec(function (err, value) {
+                if (err) {
+                    return res.status(422).send("something went wrong");
+                }
+                sampledata = value.map(r => r.name);
+                return res.status(200).send(sampledata);
+
+            })
+
+
+
+
+
+
+          /* receiverIdArray.map(function(crr,index,arr){
+
+               empdata.find({"_id":receiverIdArray[index]}).exec(function(error,data){
+                   if(error){return res.status(500).send({msg:"something went wrong"})}
+                   console.log(data[0].name);
+               })
+               
+            }) */
+           
+        
+        /* for (let i = 0; i < data.length; i++) {
             if (err) return res.send(err)
             await empdata.findById(data[i].receiver).exec(async function (err, data) {
-
+                console.log(data);
                 let receiverarray = data.map(p => new ObjectID(p.receiver[0] + ""))
                 await empdata.find({
                     "_id": {
@@ -112,19 +141,20 @@ function showAcceptedFriends(req, res, next) {
                 })
 
             });
-        }
+        } */
     });
 }
 
-function accepted(req, res, next) {
-    let id = (req.id);
-    let receiverid = (req.body.id);
+function accept(req, res, next) {
+    let currentuserid = new ObjectID(req.id);//new ObjectID("5f33e1617e6a7033a4fc8e82");//
+   
+    let requesterid = new ObjectID(req.body.id);//new ObjectID("5f3678d367cdc534d07982f5")//
     let status = "accepted";
-    console.log(receiverid, id);
+    console.log(requesterid, currentuserid);
     connect.updateOne({
-                "requester": id,
+                "requester":requesterid,//who send the request
 
-                "receiver": receiverid,
+                "receiver": currentuserid,//current login user
 
                 "status": "pending"
             }
@@ -144,7 +174,7 @@ function accepted(req, res, next) {
 }
 
 
-function rejected(req, res, next) {
+function reject(req, res, next) {
     let id = new ObjectID(req.id);
     let receiverid = new ObjectID(req.body.id);
     connect.updateOne({
@@ -200,6 +230,6 @@ module.exports = {
     showPendingFriends,
     showAcceptedFriends,
     findIdfromemail,
-    accepted,
-    rejected
+    accept,
+    reject
 }
