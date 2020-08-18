@@ -14,7 +14,7 @@ function savePost(req,res,next){
         if (error) {
             return res.status(422).send("something went wrong")
         }
-        return res.status(200).send(`post saved`);
+        return res.status(200).send({msg:"post saved"});
     });      
 }
 
