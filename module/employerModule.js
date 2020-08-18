@@ -85,7 +85,7 @@ const providingUserInfo = (req, res, next) => {
 }
 
 function displayposts(req, res, send) {
-    let id = req.id;//new ObjectID("5f33dfc211676830184588e6");
+    let id = req.id; //new ObjectID("5f33dfc211676830184588e6");
     connect.find({
             "requester": id,
             "status": "accepted"
@@ -101,10 +101,12 @@ function displayposts(req, res, send) {
             console.log(receiverIdArray)
             let postdata = await receiverIdArray.map(function (crr, index, arr) {
                 let receiverid = receiverIdArray[index]
-                empModel.findById(receiverid).select('post').exec(function (error, data) {
-                    if (error) return console.log(error);
-                        console.log(data.post);
-                })
+
+            })
+
+            empModel.findById(receiverid).select('post').exec(function (error, data) {
+                if (error) return console.log(error);
+                console.log(data.post);
             })
         }
     });
@@ -137,3 +139,20 @@ module.exports = {
     validatingImage,
     updateEmployer
 }
+
+
+//----------------------------code for Displaypost-------------------
+
+/* let receiverIdArray = data.map(val => (val.receiver[0]));
+console.log(receiverIdArray)
+let postdata = receiverIdArray.map(function (crr) {
+    return CONVERTTHISTOOBJECTID(receiverIdArray)
+})
+
+empModel.find({
+    $in: postdata
+}).select('post').exec(function (error, data) {
+    if (error) return console.log(error);
+    console.log(data.post);
+})
+return mongoose.Types.ObjectId(receiverIdArray) */

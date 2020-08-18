@@ -64,7 +64,7 @@ router.post('/acceptrequest',middleware.authenticateToken,connectionmodule.findI
 
 router.post('/rejectrequest',middleware.authenticateToken,connectionmodule.findIdfromemail,connectionmodule.reject)
 
-router.post('/user/addpost',postmodule.savePost)
+router.post('/user/addpost',middleware.authenticateToken,connectionmodule.findIdfromemail,postmodule.savePost)
 
 module.exports=router;
 //
