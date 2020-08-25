@@ -87,26 +87,21 @@ const providingUserInfo = (req, res, next) => {
 function displayposts(req, res, send) {
     let id = req.id; //new ObjectID("5f33dfc211676830184588e6");
     connect.find({
-            "requester": id,
-            "status": "accepted"
-        }
-
-    ).select('receiver').exec(async function (error, data) {
+        "requester": id,
+        "status": "accepted"
+    }).select('receiver').exec(async function (error, data) {
 
         if (error) return console.log(error);
 
-        if (data.length > 0) {
-
+        if(data.length>0){
             let receiverIdArray = data.map(val => (val.receiver[0]));
-            console.log(receiverIdArray)
-            let postdata = await receiverIdArray.map(function (crr, index, arr) {
-                let receiverid = receiverIdArray[index]
-
-            })
-
-            empModel.findById(receiverid).select('post').exec(function (error, data) {
-                if (error) return console.log(error);
-                console.log(data.post);
+            console.log("======>"+receiverIdArray);
+            empModel.findById({$in:receiverIdArray}).exec(function(error,data){
+                if(error)return res.status(422).send(error);
+                if(data){
+                    console.log(data);
+                    res.status(200).send(data.post);
+                }  
             })
         }
     });

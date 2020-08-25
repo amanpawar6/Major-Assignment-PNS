@@ -140,16 +140,17 @@
                 console.warn("something went wrong");
             });
 
-            getData('http://localhost:3000/employer/Showposts')
+            getData('http://localhost:3000/employer/showposts')
             .then(data => {
                 console.log(data);
-            data.forEach(item => {
+            data.map(item => {
                 document.getElementById("showPosts").innerHTML += item;
             })
         })
 
         function savePosts(){
             let postContent = document.getElementById("postContent").value;
+            console.log(postContent);
             postData('http://localhost:3000/user/addpost', {"post" : postContent})
             .then(data => {
                 alert(data.msg);
@@ -209,7 +210,7 @@
     <div>
         post:
         <textarea id="postContent" name="postContent" rows="4" cols="50"></textarea>
-        <input type="button" name="postBtn" id="postBtn" value="Post" onclick="">
+        <input type="button" name="postBtn" id="postBtn" value="Post" onclick="savePosts()">
     </div>
     <div>
         <input type="button" name="logoutBtn" id="logoutBtn" value="Logout" onclick="logout()">

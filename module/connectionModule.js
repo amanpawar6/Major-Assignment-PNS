@@ -82,23 +82,24 @@ function showPendingFriends(req, res, next) {
 
 
 function showAcceptedFriends(req, res, next) {
-    let id = new ObjectID("5f33dfc211676830184588e6");//new ObjectID(req.id);
+    let id = new ObjectID(req.id);
     console.log(id);
     connect.find({
-                "requester": id,
+                "requester":id,
            
                 "status": "accepted"
             }
         
     ).exec( async function (err, data) {
+        console.log(data);
 
       let receiverIdArray= data.map(value=>value.receiver[0]);
-            console.log(receiverIdArray);
             await empdata.find({
                 "_id": {
                     $in: receiverIdArray
                 }
             }).exec(function (err, value) {
+                console.log(value);
                 if (err) {
                     return res.status(422).send("something went wrong");
                 }
@@ -106,42 +107,7 @@ function showAcceptedFriends(req, res, next) {
                 return res.status(200).send(sampledata);
 
             })
-
-
-
-
-
-
-          /* receiverIdArray.map(function(crr,index,arr){
-
-               empdata.find({"_id":receiverIdArray[index]}).exec(function(error,data){
-                   if(error){return res.status(500).send({msg:"something went wrong"})}
-                   console.log(data[0].name);
-               })
-               
-            }) */
-           
-        
-        /* for (let i = 0; i < data.length; i++) {
-            if (err) return res.send(err)
-            await empdata.findById(data[i].receiver).exec(async function (err, data) {
-                console.log(data);
-                let receiverarray = data.map(p => new ObjectID(p.receiver[0] + ""))
-                await empdata.find({
-                    "_id": {
-                        $in: receiverarray
-                    }
-                }).exec(function (err, value) {
-                    if (err) {
-                        return res.status(422).send("something went wrong");
-                    }
-                    sampledata = value.map(r => r.name);
-                    return res.status(200).send(sampledata);
-
-                })
-
-            });
-        } */
+   
     });
 }
 

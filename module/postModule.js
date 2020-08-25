@@ -5,14 +5,15 @@ const empModel=require('../models/empModel');
 
 
 function savePost(req,res,next){
-    let postdetails = req.body;
+    let postdetails = req.body.post;
     let email=req.user.email;
+    console.log(postdetails);
     
     empModel.updateOne({
         "email": email
-    }, {$set: {"post" : postdetails}}, function (error) {
+    }, {$push:{"post" : postdetails}}, function (error) {
         if (error) {
-            return res.status(422).send("something went wrong")
+            return res.status(422).send(error)
         }
         return res.status(200).send({msg:"post saved"});
     });      

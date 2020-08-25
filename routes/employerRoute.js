@@ -3,7 +3,7 @@ const router = express.Router();
 const employerModule = require('../module/employerModule');
 const middleWares = require('../module/middleWares');
 const connectmodel=require('../module/connectionModule');
-const employeeModule = require('../module/employeeModule');
+//const employeeModule = require('../module/employeeModule');
 var path = require('path');
 var multer = require('multer');
 
