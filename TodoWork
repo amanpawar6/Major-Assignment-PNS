@@ -1,0 +1,17 @@
+dashboard
+Merge All Pages and runs a demo
+
+
+
+
+
+
+**///----------
+    
+    => Adding validatingAge at middlewares & employeeSignup maded changes on employeeRout.
+    => Adding validatingPhoneNumber at middlewares & employeeSignup maded changes on employeeRout.
+    => coverted get request for userinfo on dashboard
+    =>image part done on dashboard
+    
+
+**///----------

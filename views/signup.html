@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div align="center">
+        <h1>Employee Registration</h1>
+        <table>
+            <form id="sign_up_form" action="http://localhost:3000/signup" method="POST" enctype="multipart/form-data">
+                <th>
+                    <tr>Email : <input type="text" name="email" id="emailtxt" placeholder="Email" required></tr><br>
+                    <tr>Password : <input type="password" name="password" id="passwordtxt" placeholder="Password" required></tr><br>
+                    <tr>Name : <input type="text" name="name" id="nametxt" placeholder="Name" required></tr><br>
+                    <tr>Age : <input type="number" name="age" id="agetxt" placeholder="Age" required></tr><br>
+                    <tr>S.C Details : <input type="text" name="sc" id="sctxt" placeholder="secondary school" required></tr><br>
+                    <tr>S.S.C Details : <input type="text" name="ssc" id="ssctxt" placeholder="senior secondary school" required></tr><br>
+                    <tr>Graducation Details : <input type="text" name="graduation" id="graduationtxt" placeholder="Graduation"></tr><br>
+                    <tr>Masters Details : <input type="text" name="masters" id="mastertxt" placeholder="Masters"></tr><br>
+                    <tr>Phone number : <input type="number" name="phone_no" id="phonetxt" placeholder="Phone no." required></tr><br>
+                    <tr>Address : <input type="text" name="address" id="addresstxt" placeholder="Address" required></tr><br>
+                    <tr>Last Company Name : <input type="text" name="lst_cmpny" id="lsttxt" placeholder="Last Company"></tr><br>
+                    <tr>Company Name : <input type="text" name="crt_cmpny" id="cctxt" placeholder="current company"></tr><br>
+                    <tr>Image : <input type="file" name='image' id="image" required></tr><br>
+                    <br>
+                    <tr><input type="submit" id="signupbtn" value="Sign up" ></tr>
+                </th><br><br>
+               <tr> <a href="http://127.0.0.1:5500/views/login.html">LOGIN</a></tr>
+            </form>
+        </table>
+    </div>
+
+</body>
+
+</html>
